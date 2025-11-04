@@ -1,0 +1,151 @@
+package org.cuatrovientos.dam.psp.tamagotchis;
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Cuidador cuidador = new Cuidador();
+        
+        // Crear algunos tamagotchis por defecto
+        cuidador.agregarTamagotchi("Tama1");
+        cuidador.agregarTamagotchi("Tama2");
+        cuidador.agregarTamagotchi("Tama3");
+        
+        // Iniciar todos los tamagotchis
+        cuidador.iniciarTodos();
+        System.out.println("🐣 ¡Tamagotchis iniciados!");
+        
+        boolean salir = false;
+        
+        while (!salir) {
+            mostrarMenu();
+            int opcion = leerOpcion(scanner);
+            
+            switch (opcion) {
+                case 1:
+                    cuidador.mostrarEstados();
+                    break;
+                case 2:
+                    alimentarTamagotchi(scanner, cuidador);
+                    break;
+                case 3:
+                    jugarConTamagotchi(scanner, cuidador);
+                    break;
+                case 4:
+                    limpiarTamagotchi(scanner, cuidador);
+                    break;
+                case 5:
+                    matarTamagotchi(scanner, cuidador);
+                    break;
+                case 6:
+                    System.out.println("👋 ¡Hasta luego!");
+                    salir = true;
+                    // Matar todos los tamagotchis antes de salir
+                    for (int i = 0; i < cuidador.getCantidad(); i++) {
+                        if (cuidador.getTamagotchi(i).isVivo()) {
+                            cuidador.getTamagotchi(i).morir();
+                        }
+                    }
+                    break;
+                default:
+                    System.out.println("❌ Opción inválida");
+            }
+            
+            System.out.println(); // línea en blanco para separar
+        }
+        
+        scanner.close();
+    }
+    
+    private static void mostrarMenu() {
+        System.out.println("=== 🐣 MENÚ CUIDADOR ===");
+        System.out.println("1. 📊 Ver estados");
+        System.out.println("2. 🍎 Alimentar");
+        System.out.println("3. 🎮 Jugar");
+        System.out.println("4. 🚿 Limpiar");
+        System.out.println("5. 💀 Matar");
+        System.out.println("6. 🚪 Salir");
+        System.out.print("Elige una opción: ");
+    }
+    
+    private static int leerOpcion(Scanner scanner) {
+        try {
+            return scanner.nextInt();
+        } catch (Exception e) {
+            scanner.next(); // limpiar buffer
+            return -1;
+        }
+    }
+    
+    private static void alimentarTamagotchi(Scanner scanner, Cuidador cuidador) {
+        if (cuidador.getCantidad() == 0) {
+            System.out.println("❌ No hay tamagotchis");
+            return;
+        }
+        
+        cuidador.mostrarEstados();
+        System.out.print("¿Cuál quieres alimentar? (0-" + (cuidador.getCantidad()-1) + "): ");
+        
+        try {
+            int indice = scanner.nextInt();
+            cuidador.alimentarTamagotchi(indice);
+        } catch (Exception e) {
+            System.out.println("❌ Índice inválido");
+            scanner.next();
+        }
+    }
+    
+    private static void jugarConTamagotchi(Scanner scanner, Cuidador cuidador) {
+        if (cuidador.getCantidad() == 0) {
+            System.out.println("❌ No hay tamagotchis");
+            return;
+        }
+        
+        cuidador.mostrarEstados();
+        System.out.print("¿Con cuál quieres jugar? (0-" + (cuidador.getCantidad()-1) + "): ");
+        
+        try {
+            int indice = scanner.nextInt();
+            cuidador.jugarConTamagotchi(indice);
+        } catch (Exception e) {
+            System.out.println("❌ Índice inválido");
+            scanner.next();
+        }
+    }
+    
+    private static void limpiarTamagotchi(Scanner scanner, Cuidador cuidador) {
+        if (cuidador.getCantidad() == 0) {
+            System.out.println("❌ No hay tamagotchis");
+            return;
+        }
+        
+        cuidador.mostrarEstados();
+        System.out.print("¿A cuál quieres limpiar? (0-" + (cuidador.getCantidad()-1) + "): ");
+        
+        try {
+            int indice = scanner.nextInt();
+            cuidador.limpiarTamagotchi(indice);
+        } catch (Exception e) {
+            System.out.println("❌ Índice inválido");
+            scanner.next();
+        }
+    }
+    
+    private static void matarTamagotchi(Scanner scanner, Cuidador cuidador) {
+        if (cuidador.getCantidad() == 0) {
+            System.out.println("❌ No hay tamagotchis");
+            return;
+        }
+        
+        cuidador.mostrarEstados();
+        System.out.print("¿A cuál quieres matar? (0-" + (cuidador.getCantidad()-1) + "): ");
+        
+        try {
+            int indice = scanner.nextInt();
+            cuidador.matarTamagotchi(indice);
+        } catch (Exception e) {
+            System.out.println("❌ Índice inválido");
+            scanner.next();
+        }
+    }
+}

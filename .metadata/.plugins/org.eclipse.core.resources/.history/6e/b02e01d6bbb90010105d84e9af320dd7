@@ -1,0 +1,153 @@
+package org.cuatrovientos.dam.psp.tamagotchis;
+
+import java.util.Random;
+import java.util.Scanner;
+
+public class Tamagotchi extends Thread {
+    private String nombre;
+    private boolean vivo;
+    private int suciedad;
+    private long tiempoCreacion;
+    private boolean ocupado;
+    private Random random;
+    
+    public String getNombre() { 
+    	return nombre; 
+    }
+    public boolean isVivo() { 
+    	return vivo; 
+    }
+    public int getSuciedad() { 
+    	return suciedad; 
+    }
+    public boolean isOcupado() { 
+    	return ocupado; 
+    }
+    public long getTiempoVidaRestante() {
+        return 300000 - (System.currentTimeMillis() - tiempoCreacion);
+    }
+    
+    public Tamagotchi(String nombre) {
+        this.nombre = nombre;
+        this.vivo = true;
+        this.suciedad = 0;
+        this.tiempoCreacion = System.currentTimeMillis();
+        this.ocupado = false;
+        this.random = new Random();
+    }
+    
+    @Override
+    public void run() {
+    	//Queremos que cuando se lance el hilo comience el contador
+    	//y empiece a subir la suciedad
+        System.out.println(nombre + " ha nacido!");
+        
+        while (vivo) {
+            // Verificar tiempo de vida (5 minutos = 300000 ms)
+            if (System.currentTimeMillis() - tiempoCreacion > 300000) {
+                System.out.println(nombre + ": Soy demasiado viejo, me muero");
+                morir();
+                break;
+            }
+            
+            // Aumentar suciedad cada 20 segundos
+            try {
+                Thread.sleep(20000);
+                if (!ocupado) {
+                    incrementarSuciedad();
+                }
+            } catch (InterruptedException e) {
+                break;
+            }
+        }
+    }
+    
+    public void alimentar() {
+        if (!vivo || ocupado) return;
+        
+        ocupado = true;
+        System.out.println(nombre + " Está comiendo");
+        
+        // Tiempo de comida aleatorio entre 2-6 segundos
+        int tiempoComida = random.nextInt(2, 7);
+        
+        //El hilo 'duerme' durante esos segundos
+        try {
+            Thread.sleep(tiempoComida * 1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        
+        System.out.println(nombre + ": He terminado de comer! (" + tiempoComida + "s)");
+        ocupado = false;
+    }
+    
+    public void jugar() {
+        if (!vivo || ocupado) return;
+        
+        ocupado = true;
+        boolean respuestaCorrecta = false;
+        Scanner scanner = new Scanner(System.in);
+        
+        while (!respuestaCorrecta && vivo) {
+            // Suma simple
+            int num1 = random.nextInt(5) + 1; 
+            int num2 = random.nextInt(5) + 1; 
+            int resultado = num1 + num2;
+            
+            System.out.println(nombre + ": Cuánto es " + num1 + " + " + num2 + "?");
+            
+            try {
+                int respuesta = scanner.nextInt();
+                
+                if (respuesta == resultado) {
+                    System.out.println(nombre + ": Correcto!");
+                    respuestaCorrecta = true;
+                } else {
+                    System.out.println(nombre + ": Incorrecto");
+                }
+            } catch (Exception e) {
+                System.out.println(nombre + ": Eso no es un número válido");
+                scanner.next(); 
+            }
+        }
+        
+        ocupado = false;
+    }
+    
+    public void limpiar() {
+        if (!vivo || ocupado) return;
+        
+        ocupado = true;
+        System.out.println(nombre + ": Me estoy limpiando");
+        
+        try {
+            Thread.sleep(5000); // 5 segundos para limpiarse
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        
+        suciedad = 0;
+        System.out.println(nombre + ": Ya estoy limpio");
+        ocupado = false;
+    }
+    
+    private void incrementarSuciedad() {
+        suciedad++;
+        System.out.println(nombre + ": Suciedad +1 = " + suciedad);
+        
+        if (suciedad == 5) {
+            System.out.println(nombre + ": Estoy sucio, límpiame");
+        } else if (suciedad >= 10) {
+            System.out.println(nombre + ": Demasiada suciedad! He muerto...");
+            morir();
+        }
+    }
+    
+    public void morir() {
+        vivo = false;
+        System.out.println(nombre + " ha muerto");
+        interrupt();
+    }
+    
+}

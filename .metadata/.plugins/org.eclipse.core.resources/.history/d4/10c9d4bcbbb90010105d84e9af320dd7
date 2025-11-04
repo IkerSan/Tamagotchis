@@ -1,0 +1,74 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public class Cuidador {
+    private List<Tamagotchi> tamagotchis;
+    
+    public Cuidador() {
+        this.tamagotchis = new ArrayList<>();
+    }
+    
+    //Añadimos los tamagotchis directamente al cuidador
+    public void agregarTamagotchi(String nombre) {
+        Tamagotchi tama = new Tamagotchi(nombre);
+        tamagotchis.add(tama);
+    }
+    
+    //Iniciamos todos al mismo tiempo
+    public void iniciarTodos() {
+        for (Tamagotchi tama : tamagotchis) {
+            tama.start();
+        }
+    }
+    
+    public void alimentarTamagotchi(String nombre) {
+        Tamagotchi tama = buscarPorNombre(nombre);
+        if (tama != null && tama.isVivo()) {
+            new Thread(() -> tama.alimentar()).start();
+        }
+    }
+    
+    public void jugarConTamagotchi(String nombre) {
+        Tamagotchi tama = buscarPorNombre(nombre);
+        if (tama != null && tama.isVivo()) {
+            new Thread(() -> tama.jugar()).start();
+        }
+    }
+    
+    public void limpiarTamagotchi(String nombre) {
+        Tamagotchi tama = buscarPorNombre(nombre);
+        if (tama != null && tama.isVivo()) {
+            new Thread(() -> tama.limpiar()).start();
+        }
+    }
+    
+    public void matarTamagotchi(String nombre) {
+        Tamagotchi tama = buscarPorNombre(nombre);
+        if (tama != null && tama.isVivo() && !tama.isOcupado()) {
+            tama.morir();
+        } else if (tama != null && tama.isOcupado()) {
+            System.out.println("No se puede matar a " + nombre + ", está ocupado");
+        }
+    }
+    
+    private Tamagotchi buscarPorNombre(String nombre) {
+        for (Tamagotchi tama : tamagotchis) {
+            if (tama.getNombre().equals(nombre)) {
+                return tama;
+            }
+        }
+        return null;
+    }
+    
+    public void mostrarEstados() {
+        System.out.println("\n=== ESTADO DE LOS TAMAGOTCHIS ===");
+        for (Tamagotchi tama : tamagotchis) {
+            System.out.println(tama.getNombre() + 
+                             " Vivo: " + (tama.isVivo() ? "Si" : "No") +
+                             " Suciedad: " + tama.getSuciedad() +
+                             " Ocupado: " + (tama.isOcupado() ? "Si" : "No") +
+                             " Tiempo de vida restante: " + (tama.getTiempoVidaRestante() / 1000) + "s");
+        }
+        System.out.println("================================\n");
+    }
+}
