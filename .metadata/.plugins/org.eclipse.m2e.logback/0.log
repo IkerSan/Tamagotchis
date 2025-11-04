@@ -75,3 +75,9 @@
 2025-11-04 11:46:34,377 [Worker-2: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\cosas\Documents\DAM2\PSP\Tamagotchis\tamagotchis\src\test\resources
 2025-11-04 11:46:42,984 [Worker-19: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\cosas\Documents\DAM2\PSP\Tamagotchis\tamagotchis\src\main\resources
 2025-11-04 11:46:42,987 [Worker-19: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\cosas\Documents\DAM2\PSP\Tamagotchis\tamagotchis\src\test\resources
+2025-11-04 11:52:33,904 [Worker-19: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\cosas\Documents\DAM2\PSP\Tamagotchis\tamagotchis\src\main\resources
+2025-11-04 11:52:33,907 [Worker-19: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\cosas\Documents\DAM2\PSP\Tamagotchis\tamagotchis\src\test\resources
+2025-11-04 11:52:42,145 [Worker-8: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\cosas\Documents\DAM2\PSP\Tamagotchis\tamagotchis\src\main\resources
+2025-11-04 11:52:42,149 [Worker-8: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\cosas\Documents\DAM2\PSP\Tamagotchis\tamagotchis\src\test\resources
+2025-11-04 12:08:36,037 [Worker-43: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\cosas\Documents\DAM2\PSP\Tamagotchis\tamagotchis\src\main\resources
+2025-11-04 12:08:36,041 [Worker-43: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\cosas\Documents\DAM2\PSP\Tamagotchis\tamagotchis\src\test\resources
