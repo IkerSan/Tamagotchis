@@ -4,7 +4,6 @@ import java.util.Random;
 
 public class Tamagotchi extends Thread {
 	
-	//Enum con los posibles estados
     public enum EstadoTamagotchi {
         OCIOSO, COMIENDO, JUGANDO, LIMPIANDOSE, MUERTO
     }
@@ -25,32 +24,31 @@ public class Tamagotchi extends Thread {
     }
     
     public String getNombre() { return nombre; }
-    public EstadoTamagotchi getEstado() { return estado; }
-    public int getSuciedad() { return suciedad; }
-    public boolean isVivo() { return vivo; }
-    public boolean estaOcioso() { return estado == EstadoTamagotchi.OCIOSO && vivo; }
+    public synchronized EstadoTamagotchi getEstado() { return estado; }
+    public synchronized int getSuciedad() { return suciedad; }
+    public synchronized boolean isVivo() { return vivo; }
+    public synchronized boolean estaOcioso() { return estado == EstadoTamagotchi.OCIOSO && vivo; }
     
     @Override
     public void run() {
         hiloSuciedad = new Thread(() -> {
             while (isVivo()) {
                 try {
-                	//Cada 20s aumenta la suciedad
                     Thread.sleep(20000);
+                    synchronized (this) {
                         if (estado != EstadoTamagotchi.LIMPIANDOSE && estado != EstadoTamagotchi.MUERTO) {
                             suciedad++;
-                            if (suciedad == 5) System.out.println(nombre + ": Estoy muy sucio!");
+                            if (suciedad == 5) System.out.println(nombre + ": ¡Estoy muy sucio!");
                             else if (suciedad >= 10) {
                                 System.out.println(nombre + " murió por suciedad");
                                 morir();
                             }
                         }
-                    
+                    }
                 } catch (InterruptedException e) { break; }
             }
         });
         
-        //Cada segundo comprobar la vida del tamagotchi, a los 5 mins muere
         hiloVida = new Thread(() -> {
             while (isVivo()) {
                 try {
@@ -67,12 +65,11 @@ public class Tamagotchi extends Thread {
         hiloVida.start();
     }
     
-    public boolean comer() {
+    public synchronized boolean comer() {
         if (!estaOcioso()) return false;
         estado = EstadoTamagotchi.COMIENDO;
         System.out.println(nombre + " empieza a comer...");
         
-        //Come durante un tiempo aleatorio entre 3s y 8s
         int tiempo = random.nextInt(6) + 3;
         new Thread(() -> {
             try {
@@ -80,11 +77,13 @@ public class Tamagotchi extends Thread {
             } catch (InterruptedException e) {
                 return;
             }
+            synchronized (this) {
                 if (vivo) {
                     System.out.println(nombre + " terminó de comer (" + tiempo + "s)");
                     estado = EstadoTamagotchi.OCIOSO;
+                    notifyAll(); // Notificar que terminó
                 }
-            
+            }
         }).start();
         
         // Esperar a que termine
@@ -97,29 +96,32 @@ public class Tamagotchi extends Thread {
         return true;
     }
     
-    public boolean jugar() {
+    public synchronized boolean jugar() {
         if (!estaOcioso()) return false;
         estado = EstadoTamagotchi.JUGANDO;
         System.out.println(nombre + " empieza a jugar...");
-   
-        //Juego de preguntas con 2 nums aleatorios (max 5)
+        
         new Thread(() -> {
             while (getEstado() == EstadoTamagotchi.JUGANDO && isVivo()) {
-                int num1 = random.nextInt(5) + 1;
-                int num2 = random.nextInt(5) + 1;
+                int num1 = random.nextInt(9) + 1;
+                int num2 = random.nextInt(9) + 1;
                 int resultado = num1 + num2;
                 
+                if (resultado < 10) {
                     System.out.println(nombre + ": ¿Cuánto es " + num1 + " + " + num2 + "?");
                     if (cuidador.responderPregunta(nombre, resultado)) {
+                        synchronized (this) {
                             if (vivo) {
                                 System.out.println(nombre + ": ¡Correcto! Terminé de jugar");
                                 estado = EstadoTamagotchi.OCIOSO;
+                                notifyAll(); // Notificar que terminó
                             }
-                        
+                        }
                         break;
                     } else {
                         System.out.println(nombre + ": Incorrecto, sigo jugando...");
-                    }               
+                    }
+                }
                 try { Thread.sleep(2000); } catch (InterruptedException e) { break; }
             }
         }).start();
@@ -134,7 +136,7 @@ public class Tamagotchi extends Thread {
         return true;
     }
     
-    public boolean limpiar() {
+    public synchronized boolean limpiar() {
         if (!estaOcioso()) return false;
         estado = EstadoTamagotchi.LIMPIANDOSE;
         System.out.println(nombre + " se está limpiando...");
@@ -150,6 +152,7 @@ public class Tamagotchi extends Thread {
                     suciedad = 0;
                     System.out.println(nombre + " está limpio!");
                     estado = EstadoTamagotchi.OCIOSO;
+                    notifyAll(); // Notificar que terminó
                 }
             }
         }).start();

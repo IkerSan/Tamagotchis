@@ -1,72 +1,64 @@
 package org.cuatrovientos.dam.psp.tamagotchis;
 
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
-        // Crear cuidador
         Cuidador cuidador = new Cuidador();
-        
+
         // Crear Tamagotchis
-        Tamagotchi tamagotchi1 = new Tamagotchi("Tama1", cuidador);
-        Tamagotchi tamagotchi2 = new Tamagotchi("Tama2", cuidador);
-        Tamagotchi tamagotchi3 = new Tamagotchi("Tama3", cuidador);
-        
-        // Agregar Tamagotchis al cuidador
-        cuidador.agregarTamagotchi(tamagotchi1);
-        cuidador.agregarTamagotchi(tamagotchi2);
-        cuidador.agregarTamagotchi(tamagotchi3);
-        
-        // Poner pilas y lanzar al mundo
-        cuidador.ponerPilasYLanzar();
-        
-        // Menu interactivo
-        java.util.Scanner scanner = new java.util.Scanner(System.in);
+        cuidador.agregar(new Tamagotchi("Tama1", cuidador));
+        cuidador.agregar(new Tamagotchi("Tama2", cuidador));
+        cuidador.agregar(new Tamagotchi("Tama3", cuidador));
+
+        cuidador.ponerPilas();
+
+        Scanner sc = cuidador.getScanner();
         boolean ejecutando = true;
-        
+
         while (ejecutando) {
             cuidador.mostrarMenu();
-            int opcion = scanner.nextInt();
             
+            if (!sc.hasNextInt()) {
+                System.out.println("Error: Introduce un número");
+                sc.nextLine();
+                continue;
+            }
+            
+            int opcion = sc.nextInt();
+
             switch (opcion) {
-                case 1:
+                case 1: 
+                    cuidador.mostrarEstados(); 
+                    break;
+                    
+                case 2: case 3: case 4: case 5:
                     cuidador.mostrarEstados();
+                    System.out.print("Número de Tamagotchi: ");
+                    if (!sc.hasNextInt()) {
+                        System.out.println("Error: Introduce un número");
+                        sc.nextLine();
+                        break;
+                    }
+                    int num = sc.nextInt();
+                    
+                    if (opcion == 2) cuidador.alimentar(num);
+                    else if (opcion == 3) cuidador.jugar(num);
+                    else if (opcion == 4) cuidador.limpiar(num);
+                    else cuidador.destruir(num);
                     break;
-                case 2:
-                    cuidador.mostrarTamagotchisDisponibles();
-                    System.out.print("Selecciona el Tamagotchi a alimentar: ");
-                    scanner.nextLine(); // Limpiar buffer
-                    String idComida = scanner.nextLine();
-                    cuidador.alimentarTamagotchi(idComida);
-                    break;
-                case 3:
-                    cuidador.mostrarTamagotchisDisponibles();
-                    System.out.print("Selecciona el Tamagotchi para jugar: ");
-                    scanner.nextLine(); // Limpiar buffer
-                    String idJuego = scanner.nextLine();
-                    cuidador.jugarConTamagotchi(idJuego);
-                    break;
-                case 4:
-                    cuidador.mostrarTamagotchisDisponibles();
-                    System.out.print("Selecciona el Tamagotchi a limpiar: ");
-                    scanner.nextLine(); // Limpiar buffer
-                    String idLimpieza = scanner.nextLine();
-                    cuidador.limpiarTamagotchi(idLimpieza);
-                    break;
-                case 5:
-                    cuidador.mostrarTamagotchisDisponibles();
-                    System.out.print("Ingresa el ID del Tamagotchi a destruir: ");
-                    scanner.nextLine(); // Limpiar buffer
-                    String idDestruir = scanner.nextLine();
-                    cuidador.destruirTamagotchi(idDestruir);
-                    break;
+                    
                 case 6:
                     ejecutando = false;
-                    System.out.println("Saliendo del programa...");
+                    System.out.println("\n¡Adiós!");
                     break;
+                    
                 default:
-                    System.out.println("Opcion no valida");
+                    System.out.println("Opción inválida (1-6)");
             }
         }
-        
-        scanner.close();
+
+        sc.close();
+        System.exit(0);
     }
 }

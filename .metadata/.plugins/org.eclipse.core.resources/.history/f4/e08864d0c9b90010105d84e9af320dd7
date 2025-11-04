@@ -1,0 +1,72 @@
+package org.cuatrovientos.dam.psp.tamagotchis;
+
+public class Main {
+    public static void main(String[] args) {
+        // Crear cuidador
+        Cuidador cuidador = new Cuidador();
+        
+        // Crear Tamagotchis
+        Tamagotchi tamagotchi1 = new Tamagotchi("Tama1", cuidador);
+        Tamagotchi tamagotchi2 = new Tamagotchi("Tama2", cuidador);
+        Tamagotchi tamagotchi3 = new Tamagotchi("Tama3", cuidador);
+        
+        // Agregar Tamagotchis al cuidador
+        cuidador.agregarTamagotchi(tamagotchi1);
+        cuidador.agregarTamagotchi(tamagotchi2);
+        cuidador.agregarTamagotchi(tamagotchi3);
+        
+        // Poner pilas y lanzar al mundo
+        cuidador.ponerPilasYLanzar();
+        
+        // Menu interactivo
+        java.util.Scanner scanner = new java.util.Scanner(System.in);
+        boolean ejecutando = true;
+        
+        while (ejecutando) {
+            cuidador.mostrarMenu();
+            int opcion = scanner.nextInt();
+            
+            switch (opcion) {
+                case 1:
+                    cuidador.mostrarEstados();
+                    break;
+                case 2:
+                    cuidador.mostrarTamagotchisDisponibles();
+                    System.out.print("Selecciona el Tamagotchi a alimentar: ");
+                    scanner.nextLine(); // Limpiar buffer
+                    String idComida = scanner.nextLine();
+                    cuidador.alimentarTamagotchi(idComida);
+                    break;
+                case 3:
+                    cuidador.mostrarTamagotchisDisponibles();
+                    System.out.print("Selecciona el Tamagotchi para jugar: ");
+                    scanner.nextLine(); // Limpiar buffer
+                    String idJuego = scanner.nextLine();
+                    cuidador.jugarConTamagotchi(idJuego);
+                    break;
+                case 4:
+                    cuidador.mostrarTamagotchisDisponibles();
+                    System.out.print("Selecciona el Tamagotchi a limpiar: ");
+                    scanner.nextLine(); // Limpiar buffer
+                    String idLimpieza = scanner.nextLine();
+                    cuidador.limpiarTamagotchi(idLimpieza);
+                    break;
+                case 5:
+                    cuidador.mostrarTamagotchisDisponibles();
+                    System.out.print("Ingresa el ID del Tamagotchi a destruir: ");
+                    scanner.nextLine(); // Limpiar buffer
+                    String idDestruir = scanner.nextLine();
+                    cuidador.destruirTamagotchi(idDestruir);
+                    break;
+                case 6:
+                    ejecutando = false;
+                    System.out.println("Saliendo del programa...");
+                    break;
+                default:
+                    System.out.println("Opcion no valida");
+            }
+        }
+        
+        scanner.close();
+    }
+}
